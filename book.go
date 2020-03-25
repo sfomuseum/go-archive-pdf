@@ -11,14 +11,15 @@ import (
 )
 
 type BookOptions struct {
-	Orientation string
-	Size        string
-	Width       float64
-	Height      float64
-	DPI         float64
-	Border      float64
-	FontSize    float64
-	Debug       bool
+	Orientation     string
+	Size            string
+	Width           float64
+	Height          float64
+	DPI             float64
+	Border          float64
+	FontSize        float64
+	Debug           bool
+	RecordSeparator string
 }
 
 type BookBorder struct {
@@ -45,14 +46,15 @@ type Book struct {
 func NewDefaultBookOptions() *BookOptions {
 
 	opts := &BookOptions{
-		Orientation: "P",
-		Size:        "letter",
-		Width:       0.0,
-		Height:      0.0,
-		DPI:         150.0,
-		Border:      0.01,
-		Debug:       false,
-		FontSize:    6.0,
+		Orientation:     "P",
+		Size:            "letter",
+		Width:           0.0,
+		Height:          0.0,
+		DPI:             150.0,
+		Border:          0.01,
+		Debug:           false,
+		FontSize:        6.0,
+		RecordSeparator: "---",
 	}
 
 	return opts
@@ -153,6 +155,7 @@ func (bk *Book) AddRecord(ctx context.Context, body []byte) error {
 	defer bk.Mutex.Unlock()
 
 	bk.PDF.MultiCell(0, .15, string(enc), "", "", false)
+	bk.PDF.MultiCell(0, .15, bk.Options.RecordSeparator, "", "", false)
 	return nil
 }
 
