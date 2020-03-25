@@ -1,0 +1,7 @@
+# github.com/jung-kurt/gofpdf v1.16.2
+github.com/jung-kurt/gofpdf
+# github.com/sfomuseum/go-font-ocra v0.0.1
+github.com/sfomuseum/go-font-ocra
+github.com/sfomuseum/go-font-ocra/fonts
+# github.com/whosonfirst/go-bindata-assetfs v1.0.1
+github.com/whosonfirst/go-bindata-assetfs
