@@ -19,6 +19,7 @@ type BookOptions struct {
 	Border          float64
 	FontSize        float64
 	Debug           bool
+	OCRA            bool
 	RecordSeparator string
 }
 
@@ -53,8 +54,8 @@ func NewDefaultBookOptions() *BookOptions {
 		DPI:             150.0,
 		Border:          0.01,
 		Debug:           false,
-		FontSize:        6.0,
-		RecordSeparator: "---",
+		FontSize:        12.0,
+		RecordSeparator: "RECORDSEPARATOR",
 	}
 
 	return opts
@@ -86,14 +87,20 @@ func NewBook(opts *BookOptions) (*Book, error) {
 		pdf = gofpdf.New(opts.Orientation, "in", opts.Size, "")
 	}
 
-	font, err := ocra.LoadFPDFFont()
+	if opts.OCRA {
 
-	if err != nil {
-		return nil, err
+		font, err := ocra.LoadFPDFFont()
+
+		if err != nil {
+			return nil, err
+		}
+
+		pdf.AddFontFromBytes(font.Family, font.Style, font.JSON, font.Z)
+		pdf.SetFont(font.Family, "", opts.FontSize)
+
+	} else {
+		pdf.SetFont("Courier", "", opts.FontSize)
 	}
-
-	pdf.AddFontFromBytes(font.Family, font.Style, font.JSON, font.Z)
-	pdf.SetFont(font.Family, "", opts.FontSize)
 
 	w, h, _ := pdf.PageSize(1)
 
@@ -156,8 +163,11 @@ func (bk *Book) AddRecord(ctx context.Context, body []byte) error {
 	bk.Mutex.Lock()
 	defer bk.Mutex.Unlock()
 
-	bk.PDF.MultiCell(0, .15, str_body, "", "left", false)
-	bk.PDF.MultiCell(0, .15, bk.Options.RecordSeparator, "", "", false)
+	_, lh := bk.PDF.GetFontSize()
+	lh = lh * 1.3
+
+	bk.PDF.MultiCell(0, lh, str_body, "", "left", false)
+	bk.PDF.MultiCell(0, lh, bk.Options.RecordSeparator, "", "", false)
 	return nil
 }
 
