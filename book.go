@@ -7,6 +7,7 @@ import (
 	// "github.com/rainycape/unidecode"
 	"github.com/sfomuseum/go-font-ocra"
 	"log"
+	"strings"
 	"sync"
 )
 
@@ -159,6 +160,7 @@ func (bk *Book) AddRecord(ctx context.Context, body []byte) error {
 	}
 
 	str_body := string(enc)
+	str_body = strings.Replace(str_body, "\n", "", -1)
 
 	bk.Mutex.Lock()
 	defer bk.Mutex.Unlock()
